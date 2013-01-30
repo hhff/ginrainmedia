@@ -1,0 +1,207 @@
+
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+	
+	<title>GIN RAIN MEDIA</title>
+	
+		
+		<link rel="shortcut icon" href="hf.ico" />
+		<link href='http://fonts.googleapis.com/css?family=Raleway:100' rel='stylesheet' type='text/css'>
+		
+        <style>
+
+			
+
+			html { 
+				background: url(background.jpg) no-repeat center center fixed; 
+				-webkit-background-size: cover;
+				-moz-background-size: cover;
+				-o-background-size: cover;
+				background-size: cover;
+			}
+
+            body {
+                margin: 0px;
+                overflow: hidden;
+				background-image
+            }
+
+
+
+			#portfolio {  
+			    position:absolute;  
+			    width:300px;  
+			    bottom:20px;  
+			    left:50%;  
+			    margin-left:-150px;  
+			    text-align:center;  
+			    font-family: 'Raleway', cursive;
+				letter-spacing:3px;
+				font-size: 11px;
+				font-weight: 900px;
+			}
+			
+			.button-link {  
+				color: #fff; 
+				-webkit-border-radius: 10px;
+				-moz-border-radius: 10px;
+				border-radius: 10px;
+				text-decoration: none;
+				-webkit-transition-duration: 0.4s;
+				-moz-transition-duration: 0.4s;
+				transition-duration: 0.4;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				user-select: none;
+				cursor: pointer;
+				cursor: hand;
+				background: #377071;
+				padding: 7px 20px;
+			}
+			
+			.button-link:hover, .button-link:focus {
+				background: #F2746F;
+				text-decoration: none;
+			}
+			
+        </style>
+
+		<script type="text/javascript" src="jquery-1.8.3.min"></script>
+		
+		
+
+    </head>
+    <body>
+        <script src="Three.js"></script>
+     
+   
+<div id="portfolio"><a target="_blank" class="button-link" href="http://hughfrancis.me/cv/HughFrancisPortfolio2013.pdf">PORTFOLIO</a></div>
+
+
+		<script>	
+
+            
+			window.onload = function(){
+				
+				var camDist = 2000;
+				var fov = 45;
+				var rfov = fov * Math.PI / 180;
+				var sceneWidth = 1800;
+				var sceneHeight = 1200;
+				
+				var aspect = window.innerWidth / window.innerHeight;
+				
+				// scene
+                var scene = new THREE.Scene();
+				
+                // renderer
+                var renderer = new THREE.WebGLRenderer();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                document.body.appendChild(renderer.domElement);
+
+                // camera
+                var camera = new THREE.PerspectiveCamera(fov, aspect, 1, camDist+30000);
+				camera.position.x = 0;
+				camera.position.y = 0;
+                camera.position.z = camDist;
+				camera.rotation.x = 0;
+                camera.rotation.y = 0;
+				scene.add(camera);
+				
+				//controls
+				var controls = new THREE.TrackballControls(camera);
+				controls.movementSpeed = 0;
+				controls.rollSpeed = 0.01;
+				controls.dynamicDampingFactor = 0.8;
+				controls.noZoom = true;
+				controls.noRotate = false;
+				
+				
+				//ambient light
+				var ambientLight = new THREE.AmbientLight(0x555555);
+				scene.add(ambientLight);
+				
+				// textures
+				var texture = THREE.ImageUtils.loadTexture("dollar.jpg");
+				texture.wrapS = THREE.RepeatWrapping;
+				texture.wrapT = THREE.RepeatWrapping;
+				
+				var texture2 = THREE.ImageUtils.loadTexture("drag.gif");
+				
+				var texture3 = THREE.ImageUtils.loadTexture("logo.png");
+
+                // materials
+                var material = new THREE.MeshLambertMaterial({
+                    map: texture
+                });
+
+				var material2 = new THREE.MeshLambertMaterial({
+                    map: texture2
+                });
+
+				var material3 = new THREE.MeshLambertMaterial({
+                    map: texture3, transparent: true, opacity: 0.75
+                });
+
+				//geos
+				var geometry = new THREE.PlaneGeometry(440, 180);
+				var geometry2 = new THREE.PlaneGeometry(1000, 1000);
+				var geometry3 = new THREE.PlaneGeometry(1000, 1000);
+				
+				
+				var plane2 = new THREE.Mesh( geometry2, material2);
+				plane2.overdraw = true;
+				plane2.position.z = -500;
+				scene.add(plane2);
+				
+				var plane3 = new THREE.Mesh( geometry3, material3);
+				plane3.overdraw = true;
+				plane3.position.z = -501;
+				plane3.rotation.y = Math.PI;
+				scene.add(plane3);
+				
+               	document.addEventListener("mousedown", createPlane, false); 
+
+       				
+				var planes = [];
+				
+				function createPlane() {
+					var plane = new THREE.Mesh( geometry, material);
+					plane.accel = 0;
+					plane.overdraw = true;
+					plane.doubleSided = true;
+					plane.rotation.y = Math.random();
+					plane.position.x = -sceneWidth + (sceneWidth - -sceneWidth) * (event.clientX- 0) / (window.innerWidth - 0);
+					plane.position.y = -sceneHeight + (sceneHeight - -sceneHeight) * (event.clientY- window.innerHeight) / (0 - window.innerHeight);
+					plane.position.z = Math.random() * 1000;
+					scene.add(plane);
+					planes.push(plane);
+				}
+				
+				function updatePlanes() {
+					for(var j=0; j<planes.length; j++) {
+						plane = planes[j];
+						plane.accel += 0.25;
+						plane.rotation.x += (Math.random() / 10);
+						plane.position.y -= plane.accel;
+						
+						
+
+					}
+				}
+
+				setInterval(animate, 1000/60);
+				
+				function animate(){
+					updatePlanes();
+					controls.update();
+	                // render
+	                renderer.render(scene, camera);
+	            }
+				
+            };
+
+        </script>
+    </body>
+</html>
